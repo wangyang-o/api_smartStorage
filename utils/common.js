@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年05月03日
- * @LastEditTime: 2021年05月04日
+ * @LastEditTime: 2021年05月06日
  */
 
 // 下划线转换驼峰
@@ -17,10 +17,13 @@ function toLine(name) {
 }
 // 数据转换处理,true,默认转驼峰
 function fieldFormat(data, humpOrLine = true) {
+	if (data.length === 0) {
+		return data;
+	}
 	let flag = Array.isArray(data);
 	const result = flag ? [] : {};
 	if (flag) {
-		// 如果每个数组item的keys不同将其放到data.forEach里面
+		// 如果每个数组item的keys不同将其放到data.forEach里面s
 		const keys = Object.keys(data[0]).map((item) => {
 			return humpOrLine ? toHump(item) : toLine(item);
 		});

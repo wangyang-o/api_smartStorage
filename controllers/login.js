@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年05月03日
- * @LastEditTime: 2021年05月04日
+ * @LastEditTime: 2021年05月05日
  */
 let sqlConnect = require('../utils/dbconfig');
 let fieldFormat = require('../utils/common');
@@ -35,7 +35,7 @@ const toLogin = async function (req, res, next) {
 };
 const logout = async function (req, res, next) {
 	req.session.login = false;
-	res.send({ code: 200, msg: '注销登录成功！' });
+	res.send({ code: 200, msg: '已注销登录！' });
 };
 module.exports = {
 	validSession,

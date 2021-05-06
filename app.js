@@ -2,23 +2,22 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月29日
- * @LastEditTime: 2021年05月04日
+ * @LastEditTime: 2021年05月06日
  */
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var http = require('http');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
+let http = require('http');
 //中间件--用于下发session
 const session = require('express-session');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
 
-var app = express();
+let app = express();
 // http,服务入口文件
-var server = http.createServer(app);
+let server = http.createServer(app);
 app.use(
 	express.urlencoded({
 		extended: false,
@@ -36,21 +35,21 @@ app.use(
 		resave: false,
 		// cookie名称
 		name: 'token',
-		cookie: { maxAge: 600000 },
+		// 1小时
+		cookie: { maxAge: 1000 * 3600 * 1 },
 		// 强制将未初始化的 session 存储。
 		saveUninitialized: true,
 	}),
 );
 // 设置跨域和相应数据格式
 app.all('*', function (req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'X-Requested-With, mytoken');
-	res.header('Access-Control-Allow-Headers', 'X-Requested-With, Authorization');
-	res.setHeader('Content-Type', 'application/json;charset=utf-8');
+	res.header('Access-Control-Allow-Origin', 'http://localhost:3030');
+	res.header('Access-Control-Allow-Credentials', true);
 	res.header(
 		'Access-Control-Allow-Headers',
-		'Content-Type,Content-Length, Authorization, Accept,X-Requested-With',
+		'X-Requested-With, Authorization,token,Content-Type,Content-Length, Authorization, Accept',
 	);
+	res.header('Content-Type', 'application/json;charset=utf-8');
 	res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
 	res.header('X-Powered-By', ' 3.2.1');
 	if (req.method == 'OPTIONS') {
@@ -61,13 +60,13 @@ app.all('*', function (req, res, next) {
 	/*让options请求快速返回*/
 });
 // 登录拦截
-app.use('/api', function (req, res, next) {
-	if (req.session.login) {
-		next();
-	} else {
-		res.send({ code: 0, msg: '尚未登录！' });
-	}
-});
+// app.use('/api', function (req, res, next) {
+// 	if (req.session.login) {
+// 		next();
+// 	} else {
+// 		res.send({ code: 403 });
+// 	}
+// });
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 

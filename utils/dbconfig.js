@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月29日
- * @LastEditTime: 2021年05月03日
+ * @LastEditTime: 2021年05月06日
  */
 const mysql = require('mysql');
 const pool = mysql.createPool({
@@ -11,6 +11,7 @@ const pool = mysql.createPool({
 	user: 'root',
 	password: '123456',
 	database: 'smart_storage_db',
+	timezone: 'SYSTEM',
 });
 
 const sqlConnect = function (sql, sqlArr) {

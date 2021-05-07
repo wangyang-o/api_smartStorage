@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月30日
- * @LastEditTime: 2021年05月06日
+ * @LastEditTime: 2021年05月07日
  */
 let sqlConnect = require('../utils/dbconfig');
 let fieldFormat = require('../utils/common');
@@ -25,6 +25,7 @@ const getUserList = async function (req, res, next) {
 		res.send({ code: 0, msg: error });
 	}
 };
+// 模糊查找
 const fuzzySearch = async function (req, res, next) {
 	const { keyword } = req.body;
 	let like =
@@ -49,10 +50,10 @@ const fuzzySearch = async function (req, res, next) {
 };
 //添加用户
 const addUser = async function (req, res, next) {
-	const { user_name, password } = req.body;
-	let sql = 'insert user_info set user_name=?,password=?';
-	// let sql = 'INSERT user_info set user_name=?,user_phone=?,user_sex=?,password=?';
-	let sqlArr = [user_name, password];
+	const { userName, userSex, userAge, userPhone, password } = req.body;
+	let sql =
+		'INSERT INTO user_info(user_name,user_sex,user_age,user_phone,password) VALUES (?,?,?,?,?)';
+	let sqlArr = [userName, userSex, userAge, userPhone, password];
 	try {
 		const rows = await sqlConnect(sql, sqlArr);
 		res.send({ code: 200, msg: '添加成功！' });
@@ -60,10 +61,37 @@ const addUser = async function (req, res, next) {
 		res.send({ code: 0, msg: error });
 	}
 };
+// 编辑用户
+const updateUser = async function (req, res, next) {
+	const { userId, userName, userSex, userAge, userPhone } = req.body;
+	let sql =
+		'UPDATE user_info SET user_name=?,user_sex=?,user_age=?,user_phone=? WHERE user_id=?';
+	let sqlArr = [userName, userSex, userAge, userPhone, userId];
+	try {
+		const rows = await sqlConnect(sql, sqlArr);
+		res.send({ code: 200, msg: '编辑成功！' });
+	} catch (error) {
+		res.send({ code: 0, msg: error });
+	}
+};
 // 删除用户
+const deleteUser = async function (req, res, next) {
+	const { userId } = req.body;
+	let sql = 'DELETE FROM user_info WHERE user_id=?';
+	// let sql = 'INSERT user_info set user_name=?,user_phone=?,user_sex=?,password=?';
+	let sqlArr = [userId];
+	try {
+		const rows = await sqlConnect(sql, sqlArr);
+		res.send({ code: 200, msg: '删除成功！' });
+	} catch (error) {
+		res.send({ code: 0, msg: error });
+	}
+};
 
 module.exports = {
 	getUserList,
 	addUser,
 	fuzzySearch,
+	deleteUser,
+	updateUser,
 };

@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月29日
- * @LastEditTime: 2021年05月06日
+ * @LastEditTime: 2021年05月08日
  */
 const mysql = require('mysql');
 const pool = mysql.createPool({
@@ -18,7 +18,6 @@ const sqlConnect = function (sql, sqlArr) {
 	return new Promise((resolve, reject) => {
 		pool.getConnection((err, connection) => {
 			if (err) {
-				console.log(err);
 				reject(err);
 			} else {
 				connection.query(sql, sqlArr, (err, rows) => {

@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年05月03日
- * @LastEditTime: 2021年05月07日
+ * @LastEditTime: 2021年05月08日
  */
 let sqlConnect = require('../utils/dbconfig');
 let fieldFormat = require('../utils/common');
@@ -18,13 +18,11 @@ const validSession = function (req, res, next) {
 const toLogin = async function (req, res, next) {
 	const { user_name, password } = fieldFormat(req.body, false);
 	let sql = 'SELECT * FROM user_info WHERE user_name =? AND password=?';
-	// let sql = 'INSERT user_info set user_name=?,user_phone=?,user_sex=?,password=?';
 	let sqlArr = [user_name, password];
 
 	try {
 		const rows = await sqlConnect(sql, sqlArr);
 		if (rows.length != 0) {
-			console.log(rows);
 			// 设置session
 			req.session.login = true;
 			res.send({ code: 200, data: fieldFormat(rows[0]), msg: '登录成功！' });
@@ -32,7 +30,6 @@ const toLogin = async function (req, res, next) {
 			res.send({ code: 0, msg: '账号或密码错误！' });
 		}
 	} catch (error) {
-		console.log('cuowu');
 		res.send({ code: 0, msg: '账号或密码错误！', error: error });
 	}
 };

@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月29日
- * @LastEditTime: 2021年05月07日
+ * @LastEditTime: 2021年05月08日
  */
 let express = require('express');
 let path = require('path');
@@ -45,12 +45,14 @@ app.use(
 app.all('*', function (req, res, next) {
 	res.header('Access-Control-Allow-Origin', 'http://localhost:3030');
 	res.header('Access-Control-Allow-Credentials', true);
+	// 设置预检请求缓存时间，单位为秒
+	res.header('Access-Control-Max-Age', '0');
 	res.header(
 		'Access-Control-Allow-Headers',
-		'X-Requested-With, Authorization,token,Content-Type,Content-Length, Authorization, Accept',
+		'X-Requested-With,Content-Type,Content-Length, Accept',
 	);
 	res.header('Content-Type', 'application/json;charset=utf-8');
-	res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+	res.header('Access-Control-Allow-Methods', 'PUT,DELETE,OPTIONS');
 	res.header('X-Powered-By', ' 3.2.1');
 	if (req.method == 'OPTIONS') {
 		res.sendStatus(200);

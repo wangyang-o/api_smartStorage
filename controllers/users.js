@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: wy
  * @Date: 2021年04月30日
- * @LastEditTime: 2021年05月07日
+ * @LastEditTime: 2021年05月08日
  */
 let sqlConnect = require('../utils/dbconfig');
 let fieldFormat = require('../utils/common');
@@ -10,7 +10,7 @@ let fieldFormat = require('../utils/common');
 // 获取用户列表
 const getUserList = async function (req, res, next) {
 	const { pageNum, pageSize, userName = '' } = req.body;
-	let sql = `SELECT user_id,user_name,create_time,user_sex,user_phone,user_age FROM user_info WHERE user_name LIKE concat('%',?,'%') limit ?,?`;
+	let sql = `SELECT user_id,user_name,create_time,user_sex,user_phone,user_age,avatar FROM user_info WHERE user_name LIKE concat('%',?,'%') limit ?,?`;
 	let sqlArr = [userName, (pageNum - 1) * pageSize, +pageSize];
 	let countSql = `SELECT COUNT(*) count FROM user_info WHERE user_name LIKE concat('%',?,'%')`;
 	let countArr = [userName];
@@ -50,12 +50,13 @@ const fuzzySearch = async function (req, res, next) {
 };
 //添加用户
 const addUser = async function (req, res, next) {
-	const { userName, userSex, userAge, userPhone, password } = req.body;
+	const { userName, userSex, userAge, userPhone } = req.body;
 	let sql =
-		'INSERT INTO user_info(user_name,user_sex,user_age,user_phone,password) VALUES (?,?,?,?,?)';
-	let sqlArr = [userName, userSex, userAge, userPhone, password];
+		'INSERT INTO user_info(user_name,user_sex,user_age,user_phone) VALUES (?,?,?,?)';
+	let sqlArr = [userName, userSex, userAge, userPhone];
 	try {
 		const rows = await sqlConnect(sql, sqlArr);
+		// console.log(rows);
 		res.send({ code: 200, msg: '添加成功！' });
 	} catch (error) {
 		res.send({ code: 0, msg: error });
@@ -76,13 +77,26 @@ const updateUser = async function (req, res, next) {
 };
 // 删除用户
 const deleteUser = async function (req, res, next) {
-	const { userId } = req.body;
+	console.log(req.query);
+	const { userId } = req.query;
 	let sql = 'DELETE FROM user_info WHERE user_id=?';
-	// let sql = 'INSERT user_info set user_name=?,user_phone=?,user_sex=?,password=?';
 	let sqlArr = [userId];
 	try {
 		const rows = await sqlConnect(sql, sqlArr);
 		res.send({ code: 200, msg: '删除成功！' });
+	} catch (error) {
+		res.send({ code: 0, msg: error });
+	}
+};
+// 查询用户by id
+const getUserById = async function (req, res, next) {
+	const { userId } = req.query;
+	let sql =
+		'SELECT user_id,user_name,user_sex,user_age,user_phone,avatar FROM user_info WHERE user_id=?';
+	let sqlArr = [userId];
+	try {
+		const rows = await sqlConnect(sql, sqlArr);
+		res.send({ code: 200, data: fieldFormat(rows[0]), msg: '查询成功！' });
 	} catch (error) {
 		res.send({ code: 0, msg: error });
 	}
@@ -94,4 +108,5 @@ module.exports = {
 	fuzzySearch,
 	deleteUser,
 	updateUser,
+	getUserById,
 };
